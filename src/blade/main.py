@@ -26,6 +26,10 @@ from blade import config
 from blade import console
 from blade import target_pattern
 from blade import workspace
+from blade import util
+from blade import new_project
+import blade
+from blade.new_project import NewProject
 
 
 def load_config(options, root_dir):
@@ -112,12 +116,24 @@ def run_subcommand_profile(blade_path, command, options, ws, targets):
                    ' | dot -T pdf -o blade.pdf' % pstats_file)
     return exit_code[0]
 
+def run_new_command(blade_path, command, options, targets):
+    blade_root = util.find_file_bottom_up('BLADE_ROOT', from_dir=util.get_cwd())
+    if blade_root:
+        console.output("The sub dir is a blade project.")
+        return -1
+    NewProject.check_project_name(options.project_name)
+    NewProject.check_email(options.email)
+    NewProject.new_project(blade_path=blade_path, command=command, options=options, targets=targets)
+    return 0
+
 
 def _main(blade_path, argv):
     """The main entry of blade."""
     command, options, targets = command_line.parse(argv)
     setup_console(options)
 
+    if command == 'new':
+        return run_new_command(blade_path, command, options, targets)
     ws = workspace.initialize(options)
     ws.switch_to_root_dir()
     load_config(options, ws.root_dir())

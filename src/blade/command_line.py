@@ -77,6 +77,7 @@ class CommandLineParser(object):
     def _check_subcommand(self, command, options, targets):
         """Check correctness of subcommand."""
         actions = {
+            'new': self._check_new_command,
             'build': self._check_build_command,
             'clean': self._check_clean_command,
             'dump': self._check_dump_command,
@@ -126,6 +127,14 @@ class CommandLineParser(object):
     def _check_build_options(self, options, targets):
         """check the building options."""
         self._check_plat_and_profile_options(options, targets)
+
+    def _check_new_options(self, options, targets):
+        """check the new project options."""
+        # self._check_plat_and_profile_options(options, targets)
+
+    def _check_new_command(self, options, targets):
+        """check new options."""
+        self._check_new_options(options, targets)
 
     def _check_build_command(self, options, targets):
         """check build options."""
@@ -334,6 +343,29 @@ class CommandLineParser(object):
     def _add_run_arguments(self, parser):
         """Add run command arguments."""
 
+    def _add_new_arguments(self, parser):
+        """Add new command arguments."""
+        parser.add_argument(
+            '--name', dest='project_name', default='', type=str, required=True,
+            help='Blade project name'
+        )
+        parser.add_argument(
+            '--language', dest='project_language', default='c++', choices=['c', 'c++'], type=str,
+            help='Blade project language'
+        )
+        parser.add_argument(
+            '--type', dest='project_type', default='lib', choices=['lib', 'exec', 'mix'], type=str,
+            help='Blade project type'
+        )
+        parser.add_argument(
+            '--author', dest='author', default='', type=str,
+            help='Blade project author'
+        )
+        parser.add_argument(
+            '--email', dest='email', default='', type=str,
+            help='Blade project author\'s email'
+        )
+
     def _add_build_arguments(self, *parsers):
         """Add building arguments for parsers."""
         for parser in parsers:
@@ -410,6 +442,10 @@ class CommandLineParser(object):
 
         sub_parser.required = True
 
+        new_parser = sub_parser.add_parser(
+            'new',
+            help='New blade project')
+
         build_parser = sub_parser.add_parser(
             'build',
             help='Build specified targets')
@@ -436,8 +472,9 @@ class CommandLineParser(object):
             'dump',
             help='Dump specified internal information')
 
-        self._add_common_arguments(build_parser, run_parser, test_parser,
+        self._add_common_arguments(new_parser, build_parser, run_parser, test_parser,
                                    clean_parser, query_parser, dump_parser)
+        self._add_new_arguments(new_parser)
         self._add_build_arguments(build_parser, run_parser, test_parser, dump_parser)
         self._add_run_arguments(run_parser)
         self._add_test_arguments(test_parser)
