@@ -27,7 +27,7 @@ class NewProject(object):
             "creator": "",
             "email": "",
             "contributor": {
-                "wotsen": "astralrovers@outlook.com"
+                "Jerry.Yu": "jerry.yu512@outlook.com"
             },
             "create date": "",
             "copyrightTag": "",

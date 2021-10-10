@@ -82,11 +82,11 @@ _README_ = Template("""
 
 ----
 
->*Author：${author}<<${email}>>*
->*Filename：README.md -coding:UTF-8*
->*Date：${date}*
->*Brief：*
->*Copyright：*
+> - *Author：${author}<<${email}>>*
+> - *Filename：README.md -coding:UTF-8*
+> - *Date：${date}*
+> - *Brief：*
+> - *Copyright：*
 
 ----
 
