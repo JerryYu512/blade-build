@@ -45,7 +45,7 @@ class NewProject(object):
     @staticmethod
     def check_project_name(name):
         if not re.match(r'^[a-zA-Z][a-zA-Z0-9-_]+$', name):
-            raise NameError("ame not in rules: start whith a-z/A-Z，othor use a-z,A-Z,-9,-,_")
+            raise NameError("name not in rules: start whith a-z/A-Z，othor use a-z,A-Z,-9,-,_")
 
         if os.path.exists(name):
             raise FileExistsError('%s is exsit.' % name)
@@ -83,12 +83,15 @@ class NewProject(object):
         os.makedirs(os.path.join(name, 'docs'))
         os.makedirs(os.path.join(name, 'docs/dev-doc'))
         os.makedirs(os.path.join(name, 'docs/user-doc'))
-        os.makedirs(os.path.join(name, 'mk'))
+        # os.makedirs(os.path.join(name, 'mk'))
         os.makedirs(os.path.join(name, 'src'))
         os.makedirs(os.path.join(name, 'unittest'))
         os.makedirs(os.path.join(name, 'samples'))
         os.makedirs(os.path.join(name, 'thirdparty'))
         os.makedirs(os.path.join(name, 'tool'))
+        os.makedirs(os.path.join(name, 'packages'))
+        os.makedirs(os.path.join(name, 'modules'))
+        os.makedirs(os.path.join(name, 'thirdsrc'))
 
     @staticmethod
     def create_project_fie(name):
@@ -116,14 +119,44 @@ class NewProject(object):
             f.write(new_template._README_.substitute(author=NewProject.project_cfg_json_template["project info"]['author'],
             email=NewProject.project_cfg_json_template["project info"]['email'],
             date=NewProject.project_cfg_json_template["project info"]['create date']))
-        with open(os.path.join(name, "LICENSE.md"), 'w', encoding='utf-8') as f:
-            pass
+        # with open(os.path.join(name, "LICENSE.md"), 'w', encoding='utf-8') as f:
+        #     pass
         with open(os.path.join(name, "AUTHORS"), 'w', encoding='utf-8') as f:
             f.writelines([NewProject.project_cfg_json_template['project info']['author']])
         with open(os.path.join(name, ".blade/config.json"), 'w', encoding='utf-8') as f:
             json.dump(NewProject.project_cfg_json_template, f, indent=4)
         with open(os.path.join(name, ".clang-format"), 'w', encoding='utf-8') as f:
             f.write(new_template._CLANG_FORMAT_)
+        with open(os.path.join(name, "ChangeLog"), 'w', encoding='utf-8') as f:
+            f.write(new_template._CHANGELOG_.substitute(date=NewProject.project_cfg_json_template["project info"]["create date"],
+            author=NewProject.project_cfg_json_template["project info"]['author'],
+            email=NewProject.project_cfg_json_template["project info"]['email'],
+            project=NewProject.project_cfg_json_template['project info']['name']))
+        with open(os.path.join(name, "LICENSE"), 'w', encoding='utf-8') as f:
+            f.write(new_template._LICENSE_.substitute(author=NewProject.project_cfg_json_template["project info"]['author']))
+        with open(os.path.join(name, "AUTHORS"), 'w', encoding='utf-8') as f:
+            f.write(new_template._AUTHORS_.substitute(author=NewProject.project_cfg_json_template["project info"]['author'],
+            email=NewProject.project_cfg_json_template["project info"]['email']))
+        with open(os.path.join(name, "modules.mk"), 'w', encoding='utf-8') as f:
+            f.write(new_template._MODULESMK_.substitute())
+        with open(os.path.join(name, "config.mk"), 'w', encoding='utf-8') as f:
+            f.write(new_template._CONFIGMK_.substitute())
+        with open(os.path.join(name, "config.py"), 'w', encoding='utf-8') as f:
+            f.write(new_template._CONFIGPY_.substitute(author=NewProject.project_cfg_json_template["project info"]['author'],
+            email=NewProject.project_cfg_json_template["project info"]['email']))
+        with open(os.path.join(name, "src/configure.h.in"), 'w', encoding='utf-8') as f:
+            _project = re.sub(r'-', r'_', NewProject.project_cfg_json_template['project info']['name'])
+            f.write(new_template._CONFIGH_.substitute(author=NewProject.project_cfg_json_template["project info"]['author'],
+            email=NewProject.project_cfg_json_template["project info"]['email'],
+            project=_project.upper()))
+        with open(os.path.join(name, "Makefile"), 'w', encoding='utf-8') as f:
+            f.write(new_template._MAKEFILE_.substitute(project=NewProject.project_cfg_json_template['project info']['name']))
+        with open(os.path.join(name, "samples/Makefile"), 'w', encoding='utf-8') as f:
+            f.write(new_template._DEMO_MK_.substitute())
+        with open(os.path.join(name, "build.sh"), 'w', encoding='utf-8') as f:
+            f.write(new_template._BUILDSH_.substitute())
+        with open(os.path.join(name, "build_third.sh"), 'w', encoding='utf-8') as f:
+            f.write(new_template._BUILDSH_.substitute())
 
         console.output('[info]: ----------Project (%s) create success----------' % NewProject.project_cfg_json_template['project info']['name'])
         console.output('[project name    ]:   %s' % name)

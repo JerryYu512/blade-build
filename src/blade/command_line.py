@@ -358,11 +358,11 @@ class CommandLineParser(object):
             help='Blade project type'
         )
         parser.add_argument(
-            '--author', dest='author', default='', type=str,
+            '--author', dest='author', default='', type=str, required=True,
             help='Blade project author'
         )
         parser.add_argument(
-            '--email', dest='email', default='', type=str,
+            '--email', dest='email', default='', type=str, required=True,
             help='Blade project author\'s email'
         )
 
